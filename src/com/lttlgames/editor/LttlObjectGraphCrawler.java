@@ -63,17 +63,21 @@ public class LttlObjectGraphCrawler
 	private FieldsMode fieldsMode = FieldsMode.All;
 	private int maxTiers = -1; // -1 is all
 	private int currentTier = 0;
-	private static ObjectMap<FieldsMode, ObjectMap<Class<?>, ArrayList<ProcessedFieldType>>> fieldsCacheMap = new ObjectMap<LttlObjectGraphCrawler.FieldsMode, ObjectMap<Class<?>, ArrayList<ProcessedFieldType>>>(
-			3);
-	private static ObjectMap<Field, Persist> persisFieldtMap = new ObjectMap<Field, Persist>();
-	private static ObjectMap<Class<?>, Persist> persisClasstMap = new ObjectMap<Class<?>, Persist>();
+	private static ObjectMap<FieldsMode, ObjectMap<Class<?>, ArrayList<ProcessedFieldType>>> fieldsCacheMap =
+			new ObjectMap<>(
+					3);
+	private static ObjectMap<Field, Persist> persisFieldtMap =
+			new ObjectMap<>();
+	private static ObjectMap<Class<?>, Persist> persisClasstMap =
+			new ObjectMap<>();
 
 	/**
 	 * These classes are GDX (and Java) classes that can't have the @Persisted Annotation on them, but they should still
 	 * be persisted. Their public variables will be persisted with their field names. Also these will automatically show
 	 * up in GUI unless the field they are on has the GuiHide annotation
 	 */
-	private static final ArrayList<Class<?>> libraryPersistedClasses = new ArrayList<Class<?>>();
+	private static final ArrayList<Class<?>> libraryPersistedClasses =
+			new ArrayList<>();
 	static
 	{
 		libraryPersistedClasses.add(Vector2.class);
@@ -93,7 +97,8 @@ public class LttlObjectGraphCrawler
 	 * These are classes (and their subclasses) that should be ignored in crawl, that way they don't need a @IgnoreCrawl
 	 * annotation
 	 */
-	private static final ArrayList<Class<?>> libraryIgnoreCrawlClasses = new ArrayList<Class<?>>();
+	private static final ArrayList<Class<?>> libraryIgnoreCrawlClasses =
+			new ArrayList<>();
 	static
 	{
 		// java
@@ -223,8 +228,8 @@ public class LttlObjectGraphCrawler
 	{
 		// FIELDS (PUBLIC AND PRIVATES)
 		Class<?> c = o.getClass();
-		for (ProcessedFieldType pftI : LttlObjectGraphCrawler.getAllFields(c,
-				fieldsMode, (pft != null) ? pft.getParam() : null))
+		for (ProcessedFieldType pftI : LttlObjectGraphCrawler.getAllFields(c, fieldsMode,
+				(pft != null) ? pft.getParam() : null))
 		{
 			Field f = pftI.getField();
 			// check if it's private/protected so it can be accessed
@@ -300,7 +305,8 @@ public class LttlObjectGraphCrawler
 	private void crawlHashMap(Object o, ProcessedFieldType pft)
 	{
 		@SuppressWarnings("unchecked")
-		HashMap<? extends Object, ? extends Object> hm = (HashMap<? extends Object, ? extends Object>) o;
+		HashMap<? extends Object, ? extends Object> hm =
+				(HashMap<? extends Object, ? extends Object>) o;
 		if (o == null || hm == null) return;
 
 		if (pft != null && pft.getParamCount() < 2)
@@ -431,10 +437,14 @@ public class LttlObjectGraphCrawler
 	 */
 	public static boolean isPrimative(Class<?> type)
 	{
-		if (type.isPrimitive() || type == String.class || type == Boolean.class
-				|| type == boolean.class || isIntegerLikePrimative(type)
-				|| isFloatLikePrimative(type) || type == Character.class
-				|| type == char.class || type.isEnum())
+		if (type.isPrimitive() || type == String.class
+				|| type == Boolean.class
+				|| type == boolean.class
+				|| isIntegerLikePrimative(type)
+				|| isFloatLikePrimative(type)
+				|| type == Character.class
+				|| type == char.class
+				|| type.isEnum())
 		{
 			return true;
 		}
@@ -453,9 +463,12 @@ public class LttlObjectGraphCrawler
 	public static boolean isIntegerLikePrimative(Class<?> type)
 	{
 		return type == Integer.class || type == int.class
-				|| type == Short.class || type == short.class
-				|| type == Long.class || type == long.class
-				|| type == Byte.class || type == byte.class;
+				|| type == Short.class
+				|| type == short.class
+				|| type == Long.class
+				|| type == long.class
+				|| type == Byte.class
+				|| type == byte.class;
 	}
 
 	/**
@@ -467,7 +480,8 @@ public class LttlObjectGraphCrawler
 	public static boolean isFloatLikePrimative(Class<?> type)
 	{
 		return type == Float.class || type == float.class
-				|| type == Double.class || type == double.class;
+				|| type == Double.class
+				|| type == double.class;
 	}
 
 	public enum FieldsMode
@@ -480,9 +494,10 @@ public class LttlObjectGraphCrawler
 		 * Returns all fields (except for {@link IgnoreCrawl}) (ideal for skipping LttlTransform's children and
 		 * components, renderer, etc)
 		 */
-		AllButIgnore, /**
-		 * Returns the fields that should be copied: {@link Persist} and {@link DoCopy}, and not
-		 * {@link DoNotCopy} if persisted). This will also check for {@link DoCopyByReference} fields.<br>
+		AllButIgnore,
+		/**
+		 * Returns the fields that should be copied: {@link Persist} and {@link DoCopy}, and not {@link DoNotCopy} if
+		 * persisted). This will also check for {@link DoCopyByReference} fields.<br>
 		 * Does not check for {@link IgnoreCrawl} on the field.
 		 */
 		Copy,
@@ -499,7 +514,8 @@ public class LttlObjectGraphCrawler
 		 */
 		GUI,
 		/**
-		 * All persisted fields that do not have {@link DoNotExport} or non persisted fields that do have {@link Export}<br>
+		 * All persisted fields that do not have {@link DoNotExport} or non persisted fields that do have
+		 * {@link Export}<br>
 		 * Does not check for {@link IgnoreCrawl} on the field.
 		 */
 		Export
@@ -516,27 +532,27 @@ public class LttlObjectGraphCrawler
 	 *            this is all the ProcessedFieldTypes of the param types on Class c
 	 * @return
 	 */
-	public static List<ProcessedFieldType> getAllFields(Class<?> c,
-			FieldsMode fieldsMode, ProcessedFieldType... paramPfts)
+	public static List<ProcessedFieldType> getAllFields(Class<?> c, FieldsMode fieldsMode,
+			ProcessedFieldType... paramPfts)
 	{
 		ArrayList<ProcessedFieldType> fields;
 
 		// check if can get cached fields (only cache root classes with non params objects)
 		if (paramPfts == null || paramPfts.length == 0 || paramPfts[0] == null)
 		{
-			ObjectMap<Class<?>, ArrayList<ProcessedFieldType>> fieldModeMap = fieldsCacheMap
-					.get(fieldsMode);
+			ObjectMap<Class<?>, ArrayList<ProcessedFieldType>> fieldModeMap =
+					fieldsCacheMap.get(fieldsMode);
 			if (fieldModeMap == null)
 			{
 				// create and add field mode map since it hasn't been created yet
-				fieldModeMap = new ObjectMap<Class<?>, ArrayList<ProcessedFieldType>>();
+				fieldModeMap = new ObjectMap<>();
 				fieldsCacheMap.put(fieldsMode, fieldModeMap);
 			}
 			fields = fieldModeMap.get(c);
 			if (fields == null)
 			{
 				// create and add field list since it hasn't been created yet
-				fields = new ArrayList<ProcessedFieldType>();
+				fields = new ArrayList<>();
 				fieldModeMap.put(c, fields);
 
 				// don't return it yet, since it's new, need to populate it with fields first
@@ -549,7 +565,7 @@ public class LttlObjectGraphCrawler
 		}
 		else
 		{
-			fields = new ArrayList<ProcessedFieldType>();
+			fields = new ArrayList<>();
 		}
 
 		// Lttl.dump("Generating Class Field Map for " + fieldsMode.toString()
@@ -567,8 +583,8 @@ public class LttlObjectGraphCrawler
 				// skip statics (with a specific check for if it is GUI mode, it can be static as long as it has GuiShow
 				// since GUI mode can show statics)
 				// also skip synthetics and transients
-				if ((fieldsMode == FieldsMode.GUI && isStatic(f) && !f
-						.isAnnotationPresent(GuiShow.class))
+				if ((fieldsMode == FieldsMode.GUI && isStatic(f)
+						&& !f.isAnnotationPresent(GuiShow.class))
 						|| (fieldsMode != FieldsMode.GUI && isStatic(f))
 						|| f.isSynthetic()
 						|| Modifier.isTransient(f.getModifiers()))
@@ -662,18 +678,16 @@ public class LttlObjectGraphCrawler
 	 * @param fieldsMode
 	 * @return
 	 */
-	public static List<ProcessedFieldType> getAllFields(Class<?> c,
-			FieldsMode fieldsMode)
+	public static List<ProcessedFieldType> getAllFields(Class<?> c, FieldsMode fieldsMode)
 	{
 		return getAllFields(c, fieldsMode, (ProcessedFieldType[]) null);
 	}
 
 	public static boolean isFieldExported(ProcessedFieldType processedFieldType)
 	{
-		return (LttlObjectGraphCrawler.isFieldPersisted(processedFieldType) && !processedFieldType
-				.getField().isAnnotationPresent(DoNotExport.class))
-				|| processedFieldType.getField().isAnnotationPresent(
-						DoExport.class);
+		return (LttlObjectGraphCrawler.isFieldPersisted(processedFieldType)
+				&& !processedFieldType.getField().isAnnotationPresent(DoNotExport.class))
+				|| processedFieldType.getField().isAnnotationPresent(DoExport.class);
 	}
 
 	/**
@@ -685,30 +699,29 @@ public class LttlObjectGraphCrawler
 	 */
 	public static boolean isFieldPersisted(ProcessedFieldType processedFieldType)
 	{
-		boolean isFieldTypePersisted = isClassPersisted(processedFieldType
-				.getCurrentClass());
-		boolean isPersistPresent = getPersistFieldAnnotation(processedFieldType
-				.getField()) != null;
+		boolean isFieldTypePersisted =
+				isClassPersisted(processedFieldType.getCurrentClass());
+		boolean isPersistPresent =
+				getPersistFieldAnnotation(processedFieldType.getField()) != null;
 
 		if (!isFieldTypePersisted && isPersistPresent)
 		{
-			Lttl.Throw("Field Type: "
-					+ processedFieldType.getCurrentClass().getName()
+			Lttl.Throw("Field Type: " + processedFieldType.getCurrentClass().getName()
 					+ " can't be persisted."
-					+ (processedFieldType.getCurrentClass() == Object.class ? " Be more descriptive with the param type arguments (not <?>)."
+					+ (processedFieldType.getCurrentClass() == Object.class
+							? " Be more descriptive with the param type arguments (not <?>)."
 							: "")
 					+ " It's on field '"
 					+ processedFieldType.getField().getName()
 					+ "' ("
-					+ processedFieldType.getField().getDeclaringClass()
-							.getName() + ")"
+					+ processedFieldType.getField().getDeclaringClass().getName()
+					+ ")"
 					+ " which has a persist annotation.");
 		}
-		return isFieldTypePersisted
-				&& (isPersistPresent || (isLibraryPersistedClass(processedFieldType
-						.getField().getDeclaringClass()) && !LttlObjectGraphCrawler
-						.isPrivateOrProtectedOrDefault(processedFieldType
-								.getField())));
+		return isFieldTypePersisted && (isPersistPresent || (isLibraryPersistedClass(
+				processedFieldType.getField().getDeclaringClass())
+				&& !LttlObjectGraphCrawler
+						.isPrivateOrProtectedOrDefault(processedFieldType.getField())));
 	}
 
 	/**
@@ -729,8 +742,7 @@ public class LttlObjectGraphCrawler
 		{
 			if (isPersisted)
 			{
-				Lttl.Throw("Field "
-						+ field.getName()
+				Lttl.Throw("Field " + field.getName()
 						+ " on class "
 						+ field.getDeclaringClass().getSimpleName()
 						+ " is persisted but also a CopyByReference which is not allowed.");
@@ -792,8 +804,7 @@ public class LttlObjectGraphCrawler
 	public static boolean isPrivateOrProtectedOrDefault(Field f)
 	{
 		int m = f.getModifiers();
-		return (isDefaultModifer(m) || Modifier.isPrivate(m) || Modifier
-				.isProtected(m));
+		return (isDefaultModifer(m) || Modifier.isPrivate(m) || Modifier.isProtected(m));
 	}
 
 	public static boolean isDefaultModifer(int modifer)
@@ -1071,19 +1082,15 @@ public class LttlObjectGraphCrawler
 
 		if (ann == null && !isLibraryClass)
 		{
-			Lttl.Throw("Trying to persist an object whose class "
-					+ clazz.getSimpleName()
+			Lttl.Throw("Trying to persist an object whose class " + clazz.getSimpleName()
 					+ " does not have the Persist annotation and is not a library class to be persisted.");
 		}
 
-		if (!isLibraryClass
-				&& ann != null
+		if (!isLibraryClass && ann != null
 				&& LttlGameStarter.get().getClassMap().get(ann.value(), null) != clazz)
 		{
 			Lttl.Throw("No entry was found in the ClassMap for this persisted class "
-					+ clazz.getSimpleName()
-					+ " with a persist id of "
-					+ ann.value());
+					+ clazz.getSimpleName() + " with a persist id of " + ann.value());
 		}
 
 		if (clazz.getEnclosingClass() != null)
@@ -1121,8 +1128,7 @@ public class LttlObjectGraphCrawler
 				}
 				else
 				{
-					m = currentClass
-							.getDeclaredMethod(methodName, paramClasses);
+					m = currentClass.getDeclaredMethod(methodName, paramClasses);
 				}
 
 				// if found break out
@@ -1166,7 +1172,7 @@ public class LttlObjectGraphCrawler
 	public static ArrayList<Method> getAllMethods(Class<?> clazz)
 	{
 		// get methods
-		ArrayList<Method> list = new ArrayList<Method>();
+		ArrayList<Method> list = new ArrayList<>();
 		Class<?> currentClass = clazz;
 
 		// loop through all classes/supers until all the way down to Object class
@@ -1214,8 +1220,8 @@ public class LttlObjectGraphCrawler
 	 *            all the param types (procesedfieldtypes) for clazz, if any
 	 * @return the ProcessedClass obejct of field if found, or null if not found
 	 */
-	public static ProcessedFieldType getFieldByNameOrId(String nameOrId,
-			Class<?> clazz, ProcessedFieldType... paramPfts)
+	public static ProcessedFieldType getFieldByNameOrId(String nameOrId, Class<?> clazz,
+			ProcessedFieldType... paramPfts)
 	{
 		// check if the field is using an id
 		int fieldId = -1;
@@ -1253,7 +1259,8 @@ public class LttlObjectGraphCrawler
 		if (foundPft == null)
 		{
 			Lttl.logNote("Deserializing: Could not find field " + nameOrId
-					+ " on class " + clazz.getName());
+					+ " on class "
+					+ clazz.getName());
 			return null;
 		}
 		else
@@ -1295,8 +1302,7 @@ public class LttlObjectGraphCrawler
 			}
 			catch (ClassNotFoundException e1)
 			{
-				Lttl.logNote("Deserialize: Class specified in JSON ["
-						+ nameOrId
+				Lttl.logNote("Deserialize: Class specified in JSON [" + nameOrId
 						+ "] could not be found.  Be sure all class components and objects are removed from the game before deleting a class.");
 			}
 		}
@@ -1313,14 +1319,13 @@ public class LttlObjectGraphCrawler
 	 *            the sub class whose super you want to get the param types of
 	 * @return super's param types, empty array if none
 	 */
-	private static ProcessedFieldType[] getParamTypesOfSuperClass(
-			Class<?> subClass,
+	private static ProcessedFieldType[] getParamTypesOfSuperClass(Class<?> subClass,
 			ProcessedFieldType... subClassparamTypesProcessed)
 	{
 		// creates a ProcessedFieldType for the super class, so the currentClass for it will the superclass, we are
 		// checking to see if it has any parameters
-		ProcessedFieldType pft = new ProcessedFieldType(
-				subClass.getGenericSuperclass(), subClassparamTypesProcessed);
+		ProcessedFieldType pft = new ProcessedFieldType(subClass.getGenericSuperclass(),
+				subClassparamTypesProcessed);
 
 		return pft.getParams();
 	}
@@ -1431,9 +1436,9 @@ public class LttlObjectGraphCrawler
 					constr.setAccessible(false);
 				}
 			}
-			catch (NoSuchMethodException | SecurityException
-					| InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException e)
+			catch (NoSuchMethodException | SecurityException | InstantiationException
+					| IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e)
 			{
 				// shouldn't happen because it's in IllegalAccessException, which means it found the constructor, just
 				// can't access it
@@ -1477,8 +1482,7 @@ public class LttlObjectGraphCrawler
 	 * @param clazz
 	 * @return
 	 */
-	public static boolean hasAnythingToDoWithClass(ProcessedFieldType pft,
-			Class<?> clazz)
+	public static boolean hasAnythingToDoWithClass(ProcessedFieldType pft, Class<?> clazz)
 	{
 		// check if lttlcomponent field
 		if (clazz.isAssignableFrom(pft.getCurrentClass()))
@@ -1488,8 +1492,8 @@ public class LttlObjectGraphCrawler
 		// if array, check it's component type
 		else if (pft.getCurrentClass().isArray())
 		{
-			if (clazz.isAssignableFrom(getComponentTypeRoot(pft
-					.getCurrentClass()))) { return true; }
+			if (clazz.isAssignableFrom(
+					getComponentTypeRoot(pft.getCurrentClass()))) { return true; }
 		}
 		// if it has parameters, check if any of them have anything to do with this class
 		else if (pft.getParamCount() > 0)

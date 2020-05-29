@@ -22,8 +22,7 @@ public class LttlJsonDeserializer
 	 * used for not setting a field because the json does not match the field. Usually happens when changing the field
 	 * ids.
 	 */
-	private static LttlMutatableBoolean typeMismatch = new LttlMutatableBoolean(
-			false);
+	private static LttlMutatableBoolean typeMismatch = new LttlMutatableBoolean(false);
 
 	private static Helper helper;
 
@@ -48,12 +47,13 @@ public class LttlJsonDeserializer
 		return result;
 	}
 
-	private static Object preProcess(String json, Class<?> c,
-			ProcessedFieldType pft, Object container)
+	private static Object preProcess(String json, Class<?> c, ProcessedFieldType pft,
+			Object container)
 	{
 		if ((c == null && pft == null) || json == null || json.isEmpty())
 		{
-			Lttl.logNote("JSON String or class was null or empty when running preProcess. Returning null");
+			Lttl.logNote(
+					"JSON String or class was null or empty when running preProcess. Returning null");
 			return null;
 		}
 
@@ -99,8 +99,7 @@ public class LttlJsonDeserializer
 		}
 	}
 
-	private static Object deserializeArray(ArrayList<String> parsedList,
-			Class<?> c)
+	private static Object deserializeArray(ArrayList<String> parsedList, Class<?> c)
 	{
 		if (parsedList == null) return null;
 
@@ -115,8 +114,7 @@ public class LttlJsonDeserializer
 
 				// get the base class
 				Class<?> baseClass = c = LttlObjectGraphCrawler
-						.getClassByNameOrId(parsedList.get(0).substring(0,
-								bracketIndex));
+						.getClassByNameOrId(parsedList.get(0).substring(0, bracketIndex));
 
 				// generate the array class with dimensions
 				c = LttlObjectGraphCrawler.getArrayClass(baseClass, dimensions);
@@ -156,16 +154,15 @@ public class LttlJsonDeserializer
 		return newArray;
 	}
 
-	private static ArrayList<Object> deserializeArrayList(
-			ArrayList<String> parsedList, ProcessedFieldType pft,
-			ArrayList<Object> container)
+	private static ArrayList<Object> deserializeArrayList(ArrayList<String> parsedList,
+			ProcessedFieldType pft, ArrayList<Object> container)
 	{
 		if (parsedList == null) return null;
 
 		final ArrayList<Object> newList;
 		if (container == null)
 		{
-			newList = new ArrayList<Object>(parsedList.size());
+			newList = new ArrayList<>(parsedList.size());
 		}
 		else
 		{
@@ -205,16 +202,15 @@ public class LttlJsonDeserializer
 		return newList;
 	}
 
-	private static HashMap<Object, Object> deserializeHashMap(
-			HashMap<String, String> hm, ProcessedFieldType pft,
-			HashMap<Object, Object> container)
+	private static HashMap<Object, Object> deserializeHashMap(HashMap<String, String> hm,
+			ProcessedFieldType pft, HashMap<Object, Object> container)
 	{
 		if (hm == null) return null;
 
 		HashMap<Object, Object> newHM = null;
 		if (container == null)
 		{
-			new HashMap<Object, Object>(hm.size());
+			new HashMap<>(hm.size());
 		}
 		else
 		{
@@ -224,11 +220,9 @@ public class LttlJsonDeserializer
 		final HashMap<Object, Object> finalNewHM = newHM;
 
 		// iterate through the hashmap and create the key and value object and add them to the new hashmap
-		for (Iterator<Entry<String, String>> it = hm.entrySet().iterator(); it
-				.hasNext();)
+		for (Iterator<Entry<String, String>> it = hm.entrySet().iterator(); it.hasNext();)
 		{
-			Map.Entry<String, String> pairs = (Map.Entry<String, String>) it
-					.next();
+			Map.Entry<String, String> pairs = it.next();
 
 			// skip class field if any, shouldnt be
 			if (pairs.getKey().equals("class"))
@@ -259,8 +253,8 @@ public class LttlJsonDeserializer
 				else
 				{
 					// normal way
-					valueObject.value = preProcess(pairs.getValue(), null,
-							pft.getParam(1), null);
+					valueObject.value =
+							preProcess(pairs.getValue(), null, pft.getParam(1), null);
 				}
 
 				helper.compRefsList.add(new ComponentRef(pairs.getKey())
@@ -270,7 +264,8 @@ public class LttlJsonDeserializer
 					{
 						if (component == null)
 						{
-							Lttl.logNote("WARNING: a hashmap had a null key, which is probably unintended.");
+							Lttl.logNote(
+									"WARNING: a hashmap had a null key, which is probably unintended.");
 						}
 						finalNewHM.put(component, valueObject.value);
 					}
@@ -279,11 +274,12 @@ public class LttlJsonDeserializer
 			else
 			{
 				// key is normal object
-				final Object keyObject = preProcess(pairs.getKey(), null,
-						pft.getParam(0), null);
+				final Object keyObject =
+						preProcess(pairs.getKey(), null, pft.getParam(0), null);
 				if (keyObject == null)
 				{
-					Lttl.logNote("WARNING: a hashmap had a null key, which is probably unintended.");
+					Lttl.logNote(
+							"WARNING: a hashmap had a null key, which is probably unintended.");
 				}
 
 				// get value object
@@ -302,8 +298,8 @@ public class LttlJsonDeserializer
 				else
 				{
 					// normal way
-					Object valueObject = preProcess(pairs.getValue(), null,
-							pft.getParam(1), null);
+					Object valueObject =
+							preProcess(pairs.getValue(), null, pft.getParam(1), null);
 					newHM.put(keyObject, valueObject);
 				}
 			}
@@ -329,8 +325,7 @@ public class LttlJsonDeserializer
 			}
 			catch (NumberFormatException e)
 			{
-				Lttl.logNote("Deserializing: Can't parse to int: '" + json
-						+ "'");
+				Lttl.logNote("Deserializing: Can't parse to int: '" + json + "'");
 				typeMismatch.value = true;
 				return 0;
 			}
@@ -343,8 +338,7 @@ public class LttlJsonDeserializer
 			}
 			catch (NumberFormatException e)
 			{
-				Lttl.logNote("Deserializing: Can't parse to float: '" + json
-						+ "'");
+				Lttl.logNote("Deserializing: Can't parse to float: '" + json + "'");
 				typeMismatch.value = true;
 				return 0;
 			}
@@ -359,8 +353,7 @@ public class LttlJsonDeserializer
 			{
 				// return the string without the begininng and ending quotes and replace all escaped double quotes with
 				// just double quotes
-				return json.substring(1, json.length() - 1).replace("\\\"",
-						"\"");
+				return json.substring(1, json.length() - 1).replace("\\\"", "\"");
 			}
 
 		}
@@ -375,7 +368,9 @@ public class LttlJsonDeserializer
 			catch (IllegalArgumentException e)
 			{
 				Lttl.logNote("Deserializing: No Enum with value of '" + json
-						+ "'" + " in class: " + c.getCanonicalName());
+						+ "'"
+						+ " in class: "
+						+ c.getCanonicalName());
 				typeMismatch.value = true;
 				return null;
 			}
@@ -388,8 +383,7 @@ public class LttlJsonDeserializer
 			}
 			catch (NumberFormatException e)
 			{
-				Lttl.logNote("Deserializing: Can't parse to double: '" + json
-						+ "'");
+				Lttl.logNote("Deserializing: Can't parse to double: '" + json + "'");
 				typeMismatch.value = true;
 				return 0;
 			}
@@ -402,8 +396,7 @@ public class LttlJsonDeserializer
 			}
 			catch (NumberFormatException e)
 			{
-				Lttl.logNote("Deserializing: Can't parse to long: '" + json
-						+ "'");
+				Lttl.logNote("Deserializing: Can't parse to long: '" + json + "'");
 				typeMismatch.value = true;
 				return 0;
 			}
@@ -416,8 +409,7 @@ public class LttlJsonDeserializer
 			}
 			catch (NumberFormatException e)
 			{
-				Lttl.logNote("Deserializing: Can't parse to short: '" + json
-						+ "'");
+				Lttl.logNote("Deserializing: Can't parse to short: '" + json + "'");
 				typeMismatch.value = true;
 				return 0;
 			}
@@ -430,8 +422,7 @@ public class LttlJsonDeserializer
 			}
 			catch (NumberFormatException e)
 			{
-				Lttl.logNote("Deserializing: Can't parse to byte: '" + json
-						+ "'");
+				Lttl.logNote("Deserializing: Can't parse to byte: '" + json + "'");
 				typeMismatch.value = true;
 				return 0;
 			}
@@ -447,8 +438,8 @@ public class LttlJsonDeserializer
 	 *            can be null, will create new instance
 	 * @return
 	 */
-	private static Object deserializeObject(HashMap<String, String> hm,
-			Class<?> c, ProcessedFieldType pft, Object container)
+	private static Object deserializeObject(HashMap<String, String> hm, Class<?> c,
+			ProcessedFieldType pft, Object container)
 	{
 		if (hm == null) return null;
 
@@ -476,36 +467,31 @@ public class LttlJsonDeserializer
 			{
 				Lttl.Throw("The given container object "
 						+ container.getClass().getSimpleName()
-						+ " does not match the class " + c.getSimpleName());
+						+ " does not match the class "
+						+ c.getSimpleName());
 			}
 			object = container;
 		}
 		final Object finalObject = object;
 
 		// entering first LttlComponent
-		if (LttlComponent.class.isAssignableFrom(c)
-				&& helper.primaryComp == null)
+		if (LttlComponent.class.isAssignableFrom(c) && helper.primaryComp == null)
 		{
 			helper.primaryComp = (LttlComponent) object;
 		}
 
 		// iterate through rest of hash map fields
-		for (Iterator<Entry<String, String>> it = hm.entrySet().iterator(); it
-				.hasNext();)
+		for (Iterator<Entry<String, String>> it = hm.entrySet().iterator(); it.hasNext();)
 		{
-			Map.Entry<String, String> pairs = (Map.Entry<String, String>) it
-					.next();
+			Map.Entry<String, String> pairs = it.next();
 
 			// get field
-			final ProcessedFieldType pftI = LttlObjectGraphCrawler
-					.getFieldByNameOrId(pairs.getKey(), c,
-							(pft != null) ? pft.getParam(0) : null);
+			final ProcessedFieldType pftI = LttlObjectGraphCrawler.getFieldByNameOrId(
+					pairs.getKey(), c, (pft != null) ? pft.getParam(0) : null);
 
 			boolean isSceneCompMapField = false;
-			if (LttlSceneCore.class.isAssignableFrom(c)
-					&& pftI.getField() != null
-					&& LttlObjectGraphCrawler.isFieldComponentMap(pftI
-							.getField()))
+			if (LttlSceneCore.class.isAssignableFrom(c) && pftI.getField() != null
+					&& LttlObjectGraphCrawler.isFieldComponentMap(pftI.getField()))
 			{
 				isSceneCompMapField = true;
 				helper.inSceneCompMap = true;
@@ -515,7 +501,9 @@ public class LttlJsonDeserializer
 			if (pftI == null || pftI.getField() == null)
 			{
 				Lttl.logNote("Deserializing: Skipping field " + pairs.getKey()
-						+ " on class " + c.getName() + "... losing data.");
+						+ " on class "
+						+ c.getName()
+						+ "... losing data.");
 				continue;
 			}
 
@@ -532,8 +520,7 @@ public class LttlJsonDeserializer
 						// check if field is private/protected, if it is, make it accessible
 						final boolean isPrivate;
 						Field f = pftI.getField();
-						if (LttlObjectGraphCrawler
-								.isPrivateOrProtectedOrDefault(f))
+						if (LttlObjectGraphCrawler.isPrivateOrProtectedOrDefault(f))
 						{
 							isPrivate = true;
 							f.setAccessible(true);
@@ -547,8 +534,7 @@ public class LttlJsonDeserializer
 						{
 							f.set(finalObject, component);
 						}
-						catch (IllegalArgumentException
-								| IllegalAccessException e)
+						catch (IllegalArgumentException | IllegalAccessException e)
 						{
 							e.printStackTrace();
 						}
@@ -598,8 +584,8 @@ public class LttlJsonDeserializer
 				Object fieldObject = null;
 
 				typeMismatch.value = false;
-				fieldObject = preProcess(pairs.getValue(),
-						pftI.getCurrentClass(), pftI, fieldObjectContainer);
+				fieldObject = preProcess(pairs.getValue(), pftI.getCurrentClass(), pftI,
+						fieldObjectContainer);
 
 				if (!typeMismatch.value)
 				{
@@ -614,8 +600,7 @@ public class LttlJsonDeserializer
 						}
 						catch (IllegalArgumentException e)
 						{
-							Lttl.logNote("Deserializing: Skipping field "
-									+ pairs.getKey()
+							Lttl.logNote("Deserializing: Skipping field " + pairs.getKey()
 									+ " on class "
 									+ c.getName()
 									+ ".  Probably because a field type was changed.");
@@ -624,8 +609,9 @@ public class LttlJsonDeserializer
 				}
 				else
 				{
-					Lttl.logNote("Deserializing: Skipping field "
-							+ pairs.getKey() + " on class " + c.getName());
+					Lttl.logNote("Deserializing: Skipping field " + pairs.getKey()
+							+ " on class "
+							+ c.getName());
 				}
 			}
 			catch (IllegalArgumentException | IllegalAccessException e)
@@ -663,7 +649,7 @@ public class LttlJsonDeserializer
 
 	private static HashMap<String, String> parseObject(String json)
 	{
-		HashMap<String, String> hm = new HashMap<String, String>();
+		HashMap<String, String> hm = new HashMap<>();
 
 		// iterate through the whole string, skipping first and last chars
 		StringBuilder fieldName = new StringBuilder();
@@ -730,7 +716,7 @@ public class LttlJsonDeserializer
 
 	private static ArrayList<String> parseList(String json)
 	{
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 
 		// iterate through the whole string, skipping first and last chars
 		StringBuilder itemValue = new StringBuilder();
@@ -776,7 +762,7 @@ public class LttlJsonDeserializer
 
 	private static HashMap<String, String> parseHashMap(String json)
 	{
-		HashMap<String, String> hm = new HashMap<String, String>();
+		HashMap<String, String> hm = new HashMap<>();
 
 		// iterate through the whole string, skipping first and last chars
 		StringBuilder keyValue = new StringBuilder();
@@ -855,11 +841,11 @@ public class LttlJsonDeserializer
 	 */
 	private static boolean shouldDoComponentRef(Class<?> c)
 	{
-		return LttlComponent.class.isAssignableFrom(c)
-				&& helper.compRefsList != null
-				// if outside scene component map, then always try and make references, if inside the scene component
-				// map, then the first component will have a new instance created, the deeper ones will be by reference
-				&& ((helper.inSceneCompMap && helper.primaryComp != null) || !helper.inSceneCompMap);
+		return LttlComponent.class.isAssignableFrom(c) && helper.compRefsList != null
+		// if outside scene component map, then always try and make references, if inside the scene component
+		// map, then the first component will have a new instance created, the deeper ones will be by reference
+				&& ((helper.inSceneCompMap && helper.primaryComp != null)
+						|| !helper.inSceneCompMap);
 	}
 
 	static class Helper
@@ -920,13 +906,12 @@ public class LttlJsonDeserializer
 
 			if (id > Lttl.scenes.getWorldCore().getLastComponentId())
 			{
-				Lttl.Throw("Inconsistency with component ids.  Loading component id "
-						+ id + " which is out of range for component ids.");
+				Lttl.Throw("Inconsistency with component ids.  Loading component id " + id
+						+ " which is out of range for component ids.");
 			}
 
 			// if null with post a silent error
-			LttlComponent component = ComponentHelper.getComponentReference(id,
-					scene);
+			LttlComponent component = ComponentHelper.getComponentReference(id, scene);
 			if (component == null) { return; }
 
 			set(component);

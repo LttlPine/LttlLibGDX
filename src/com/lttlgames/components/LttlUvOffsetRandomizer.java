@@ -19,12 +19,15 @@ public class LttlUvOffsetRandomizer extends LttlComponent
 	@Persist(9011002)
 	@GuiMin(0)
 	public float interval = .5f;
+	@Persist(9011003)
+	public boolean runInEditor = true;
 
 	private float duration = 0;
 
+	@Override
 	public void onEditorUpdate()
 	{
-		update();
+		if (runInEditor) update();
 	}
 
 	@Override

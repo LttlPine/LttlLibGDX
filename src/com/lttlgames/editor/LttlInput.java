@@ -94,8 +94,7 @@ public final class LttlInput extends InputAdapter
 
 			// TODO when doing android use these touch methods
 			@Override
-			public boolean touchUp(int screenX, int screenY, int pointer,
-					int button)
+			public boolean touchUp(int screenX, int screenY, int pointer, int button)
 			{
 				return false;
 			}
@@ -107,8 +106,7 @@ public final class LttlInput extends InputAdapter
 			}
 
 			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer,
-					int button)
+			public boolean touchDown(int screenX, int screenY, int pointer, int button)
 			{
 				return false;
 			}
@@ -157,12 +155,11 @@ public final class LttlInput extends InputAdapter
 	void update()
 	{
 		// do include clipping space
-		isMouseInPlayViewport = isMouseInCameraViewport(Lttl.game.getCamera(),
-				true);
-		isMouseInPlayClippedViewport = isMouseInCameraViewport(
-				Lttl.game.getCamera(), false);
-		isMouseInEditorViewport = (Lttl.game.inEditor()) ? isMouseInCameraViewport(
-				Lttl.editor.getCamera(), true) : false;
+		isMouseInPlayViewport = isMouseInCameraViewport(Lttl.game.getCamera(), true);
+		isMouseInPlayClippedViewport =
+				isMouseInCameraViewport(Lttl.game.getCamera(), false);
+		isMouseInEditorViewport = (Lttl.game.inEditor())
+				? isMouseInCameraViewport(Lttl.editor.getCamera(), true) : false;
 
 		// PLAY MOUSE
 		if (isMouseActivePlayViewport())
@@ -196,17 +193,15 @@ public final class LttlInput extends InputAdapter
 			if (lastActiveClippedViewportMousePos != null)
 			{
 				// skip if null, since no delta if no last active pos
-				playActiveClippedViewportMouseDelta.set(
-						playActiveClippedViewportMousePos).sub(
-						lastActiveClippedViewportMousePos);
+				playActiveClippedViewportMouseDelta.set(playActiveClippedViewportMousePos)
+						.sub(lastActiveClippedViewportMousePos);
 			}
 			else
 			{
 				lastActiveClippedViewportMousePos = new Vector2();
 				playActiveClippedViewportMouseDelta.setZero();
 			}
-			lastActiveClippedViewportMousePos
-					.set(playActiveClippedViewportMousePos);
+			lastActiveClippedViewportMousePos.set(playActiveClippedViewportMousePos);
 		}
 		else
 		{
@@ -227,17 +222,15 @@ public final class LttlInput extends InputAdapter
 				if (lastEditorActiveViewportMousePos != null)
 				{
 					// skip if null, since no delta if no last active pos
-					editorActiveViewportMouseDelta.set(
-							editorActiveViewportMousePos).sub(
-							lastEditorActiveViewportMousePos);
+					editorActiveViewportMouseDelta.set(editorActiveViewportMousePos)
+							.sub(lastEditorActiveViewportMousePos);
 				}
 				else
 				{
 					lastEditorActiveViewportMousePos = new Vector2();
 					editorActiveViewportMouseDelta.setZero();
 				}
-				lastEditorActiveViewportMousePos
-						.set(editorActiveViewportMousePos);
+				lastEditorActiveViewportMousePos.set(editorActiveViewportMousePos);
 			}
 			else
 			{
@@ -678,7 +671,7 @@ public final class LttlInput extends InputAdapter
 
 	/**
 	 * Returns if this mouse button was pressed this frame (one time).<br>
-	 * [0-left, 1-right, 2-left]
+	 * [0-left, 1-right, 2-middle]
 	 * 
 	 * @param button
 	 * @return
@@ -806,11 +799,12 @@ public final class LttlInput extends InputAdapter
 			boolean shouldIncludeClippingArea)
 	{
 		// check x
-		if (Gdx.input.getX() < ((shouldIncludeClippingArea) ? 0 : camera
-				.getClippingPixelWidth())
-				|| Gdx.input.getX() > ((shouldIncludeClippingArea) ? camera
-						.getRawPixelWidth() : camera.getClippingPixelWidth()
-						+ camera.getViewportPixelWidthStatic()))
+		if (Gdx.input.getX() < ((shouldIncludeClippingArea) ? 0
+				: camera.getClippingPixelWidth())
+				|| Gdx.input
+						.getX() > ((shouldIncludeClippingArea) ? camera.getRawPixelWidth()
+								: camera.getClippingPixelWidth()
+										+ camera.getViewportPixelWidthStatic()))
 		{
 			return false;
 		}
@@ -823,28 +817,27 @@ public final class LttlInput extends InputAdapter
 				// play camera
 				if (camera.isPlayCamera())
 				{
-					if (Gdx.input.getY() < Lttl.editor.getCamera()
-							.getRawPixelHeight()
-							+ ((shouldIncludeClippingArea) ? 0 : camera
-									.getClippingPixelHeight())
+					if (Gdx.input.getY() < Lttl.editor.getCamera().getRawPixelHeight()
+							+ ((shouldIncludeClippingArea) ? 0
+									: camera.getClippingPixelHeight())
 							|| Gdx.input.getY() > Lttl.editor.getCamera()
 									.getRawPixelHeight()
-									+ ((shouldIncludeClippingArea) ? camera
-											.getRawPixelHeight()
-											: camera.getClippingPixelHeight()
-													+ camera.getViewportPixelHeightStatic())) { return false; }
+									+ ((shouldIncludeClippingArea)
+											? camera.getRawPixelHeight()
+											: camera.getClippingPixelHeight() + camera
+													.getViewportPixelHeightStatic())) { return false; }
 				}
 				// editor camera, no clipping
-				else if (Gdx.input.getY() < 0
-						|| Gdx.input.getY() > camera.getRawPixelHeight()) { return false; }
+				else if (Gdx.input.getY() < 0 || Gdx.input.getY() > camera
+						.getRawPixelHeight()) { return false; }
 			}
 			// not in editor, can assume it's always play camera and no editor camera
 			else if (Gdx.input.getY() < ((shouldIncludeClippingArea) ? 0
 					: camera.getClippingPixelHeight())
-					|| Gdx.input.getY() > ((shouldIncludeClippingArea) ? camera
-							.getRawPixelHeight() : camera
-							.getClippingPixelHeight()
-							+ camera.getViewportPixelHeightStatic())) { return false; }
+					|| Gdx.input.getY() > ((shouldIncludeClippingArea)
+							? camera.getRawPixelHeight()
+							: camera.getClippingPixelHeight() + camera
+									.getViewportPixelHeightStatic())) { return false; }
 		}
 		// must be contained in viewport
 		return true;
@@ -1176,8 +1169,7 @@ public final class LttlInput extends InputAdapter
 	 */
 	public Vector2 getEditorMousePosCurrent()
 	{
-		Lttl.editor.getCamera().unProjectPoint(Gdx.input.getX(),
-				Gdx.input.getY(), tmp0);
+		Lttl.editor.getCamera().unProjectPoint(Gdx.input.getX(), Gdx.input.getY(), tmp0);
 		return tmp0;
 	}
 
@@ -1201,8 +1193,7 @@ public final class LttlInput extends InputAdapter
 	 */
 	public Vector2 getMousePos(boolean constrainToClippedArea)
 	{
-		return tmp0.set(getX(constrainToClippedArea),
-				getY(constrainToClippedArea));
+		return tmp0.set(getX(constrainToClippedArea), getY(constrainToClippedArea));
 	}
 
 	/**
@@ -1217,24 +1208,25 @@ public final class LttlInput extends InputAdapter
 	public Vector2 getMousePosCurrent(boolean constrainToClippedArea)
 	{
 		Lttl.game.getCamera().unProjectPoint(
-				constrainToClippedArea ? LttlMath.clamp(Gdx.input.getX(),
-						Lttl.game.getCamera().getClippingPixelWidth(),
-						Lttl.game.getCamera().getClippingPixelWidth()
-								+ Lttl.game.getCamera()
-										.getViewportPixelWidthStatic())
+				constrainToClippedArea
+						? LttlMath.clamp(Gdx.input.getX(),
+								Lttl.game.getCamera().getClippingPixelWidth(),
+								Lttl.game.getCamera().getClippingPixelWidth()
+										+ Lttl.game.getCamera()
+												.getViewportPixelWidthStatic())
 						: Gdx.input.getX(),
-				constrainToClippedArea ? LttlMath.clamp(Gdx.input.getY(),
-						(Lttl.game.inEditor() ? Lttl.editor.getCamera()
-								.getRawPixelHeight() : 0)
-								+ Lttl.game.getCamera()
-										.getClippingPixelHeight(),
-						(Lttl.game.inEditor() ? Lttl.editor.getCamera()
-								.getRawPixelHeight() : 0)
-								+ Lttl.game.getCamera()
-										.getClippingPixelHeight()
-								+ Lttl.game.getCamera()
-										.getViewportPixelHeightStatic())
-						: Gdx.input.getY(), tmp0);
+				constrainToClippedArea
+						? LttlMath.clamp(Gdx.input.getY(),
+								(Lttl.game.inEditor()
+										? Lttl.editor.getCamera().getRawPixelHeight() : 0)
+										+ Lttl.game.getCamera().getClippingPixelHeight(),
+								(Lttl.game.inEditor()
+										? Lttl.editor.getCamera().getRawPixelHeight() : 0)
+										+ Lttl.game.getCamera().getClippingPixelHeight()
+										+ Lttl.game.getCamera()
+												.getViewportPixelHeightStatic())
+						: Gdx.input.getY(),
+				tmp0);
 		return tmp0;
 	}
 
@@ -1275,8 +1267,8 @@ public final class LttlInput extends InputAdapter
 	 */
 	public float getEditorPixelY()
 	{
-		return getRawPixelY()
-				- (Gdx.graphics.getHeight() * (1 - Lttl.editor.getSettings().editorViewRatio));
+		return getRawPixelY() - (Gdx.graphics.getHeight()
+				* (1 - Lttl.editor.getSettings().editorViewRatio));
 	}
 
 	/**
@@ -1390,22 +1382,19 @@ public final class LttlInput extends InputAdapter
 
 	public boolean isEditorMouseDownAny()
 	{
-		return Lttl.input.isEditorMouseDown(0)
-				|| Lttl.input.isEditorMouseDown(1)
+		return Lttl.input.isEditorMouseDown(0) || Lttl.input.isEditorMouseDown(1)
 				|| Lttl.input.isEditorMouseDown(2);
 	}
 
 	public boolean isEditorMousePressedAny()
 	{
-		return Lttl.input.isEditorMousePressed(0)
-				|| Lttl.input.isEditorMousePressed(1)
+		return Lttl.input.isEditorMousePressed(0) || Lttl.input.isEditorMousePressed(1)
 				|| Lttl.input.isEditorMousePressed(2);
 	}
 
 	public boolean isEditorMouseReleasedAny()
 	{
-		return Lttl.input.isEditorMouseReleased(0)
-				|| Lttl.input.isEditorMouseReleased(1)
+		return Lttl.input.isEditorMouseReleased(0) || Lttl.input.isEditorMouseReleased(1)
 				|| Lttl.input.isEditorMouseReleased(2);
 	}
 
@@ -1417,14 +1406,12 @@ public final class LttlInput extends InputAdapter
 
 	public boolean isMousePressedAny()
 	{
-		return Lttl.input.isMousePressed(0) || Lttl.input.isMousePressed(1)
-				|| Lttl.input.isMousePressed(2);
+		return Lttl.input.isMousePressed(0) || Lttl.input.isMousePressed(1);
 	}
 
 	public boolean isMouseReleasedAny()
 	{
-		return Lttl.input.isMouseReleased(0) || Lttl.input.isMouseReleased(1)
-				|| Lttl.input.isMouseReleased(2);
+		return Lttl.input.isMouseReleased(0) || Lttl.input.isMouseReleased(1);
 	}
 
 	public boolean isEitherMouseDownAny()

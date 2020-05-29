@@ -8,7 +8,6 @@ import com.lttlgames.components.EmitterShape;
 import com.lttlgames.components.FloatOption;
 import com.lttlgames.components.GuiContainerAnchor;
 import com.lttlgames.components.IntOption;
-import com.lttlgames.components.JointSpringSettings;
 import com.lttlgames.components.LttlAddComponentOnStart;
 import com.lttlgames.components.LttlAnimationManager;
 import com.lttlgames.components.LttlCameraController;
@@ -110,7 +109,7 @@ public class LttlClassMap
 	// NOTE
 	// NOTE
 	// NOTE
-	public final IntMap<Class<?>> classMap = new IntMap<Class<?>>(280);
+	public final IntMap<Class<?>> classMap = new IntMap<>(280);
 	{
 		classMap.put(-901, AASettings.class);
 		classMap.put(-902, AnimationType.class);
@@ -139,7 +138,6 @@ public class LttlClassMap
 		classMap.put(-9025, UVMeshSettings.class);
 		classMap.put(-9026, LttlCameraController.class);
 		classMap.put(-9027, MouseJointSettings.class);
-		classMap.put(-9028, JointSpringSettings.class);
 		classMap.put(-9029, LttlDemoComponent.class);
 		classMap.put(-9030, LttlDemoComponent2.class);
 		classMap.put(-9031, LttlDemoComponent3.class);

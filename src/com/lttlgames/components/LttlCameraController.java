@@ -65,8 +65,7 @@ public class LttlCameraController extends LttlComponent
 	public void onEditorCreate()
 	{
 		t().setWorldPosition(Lttl.game.getCamera().position);
-		t().setWorldScale(Lttl.game.getCamera().zoom,
-				Lttl.game.getCamera().zoom);
+		t().setWorldScale(Lttl.game.getCamera().zoom, Lttl.game.getCamera().zoom);
 		t().setWorldRotation(Lttl.game.getCamera().rotation);
 	}
 
@@ -100,8 +99,9 @@ public class LttlCameraController extends LttlComponent
 				{
 					t().updateWorldValues();
 					handle = new HandleRect(t().getWorldPosition(false), -999,
-							new Vector2(20, 20), true, t().getWorldRotation(
-									true), false, false, true, false,
+							new Vector2(Lttl.editor.getSettings().handleSize,
+									Lttl.editor.getSettings().handleSize),
+							true, t().getWorldRotation(true), false, false, true, false,
 							Color.RED, 0, null)
 					{
 						@Override
@@ -145,10 +145,8 @@ public class LttlCameraController extends LttlComponent
 		{
 			t().updateWorldValues();
 
-			if (position)
-				Lttl.game.getCamera().position.set(t().getWorldPosition(false));
-			if (rotation)
-				Lttl.game.getCamera().rotation = t().getWorldRotation(false);
+			if (position) Lttl.game.getCamera().position.set(t().getWorldPosition(false));
+			if (rotation) Lttl.game.getCamera().rotation = t().getWorldRotation(false);
 			if (zoom) Lttl.game.getCamera().zoom = t().getWorldScale(false).x;
 		}
 	}

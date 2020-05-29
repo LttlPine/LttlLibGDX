@@ -113,23 +113,24 @@ public final class LttlTextureManager extends LttlResourceManager
 	@Override
 	void setupFolderNames()
 	{
-		outputDirInternal = getFileHandleInternalAssets("resources/"
-				+ scene.getId() + "/atlas-textures");
-		nonAtlasTexturesDirInternal = getFileHandleInternalAssets("resources/"
-				+ scene.getId() + "/textures");
+		outputDirInternal = getFileHandleInternalAssets(
+				"resources/" + scene.getId() + "/atlas-textures");
+		nonAtlasTexturesDirInternal =
+				getFileHandleInternalAssets("resources/" + scene.getId() + "/textures");
 
 		if (Lttl.game.inEditor())
 		{
 			inputAtlasTexturesDirRelative = LttlResourceManager.getFileHandle(
-					"../" + LttlResourceManager.getProjectName() + "/etc/"
-							+ scene.getId() + "/textures-to-atlas",
+					"../" + LttlResourceManager.getProjectName()
+							+ "/etc/"
+							+ scene.getId()
+							+ "/textures-to-atlas",
 					FileType.Absolute, false);
-			outputAtlasTexturesDirRelative = getFileHandle(
-					"resources/" + scene.getId() + "/atlas-textures",
-					FileType.Absolute, true);
+			outputAtlasTexturesDirRelative =
+					getFileHandle("resources/" + scene.getId() + "/atlas-textures",
+							FileType.Absolute, true);
 			nonAtlasTexturesDirRelative = getFileHandle(
-					"resources/" + scene.getId() + "/textures",
-					FileType.Absolute, true);
+					"resources/" + scene.getId() + "/textures", FileType.Absolute, true);
 		}
 	}
 
@@ -142,7 +143,7 @@ public final class LttlTextureManager extends LttlResourceManager
 	{
 		if (textureNames != null) return textureNames;
 
-		textureNames = new ArrayList<String>();
+		textureNames = new ArrayList<>();
 		textureNames.addAll(atlasTexturesMap.keySet());
 		textureNames.addAll(nonAtlasTexturesMap.keySet());
 
@@ -158,7 +159,7 @@ public final class LttlTextureManager extends LttlResourceManager
 	{
 		if (animationTextureNames != null) return animationTextureNames;
 
-		animationTextureNames = new ArrayList<String>();
+		animationTextureNames = new ArrayList<>();
 		animationTextureNames.addAll(atlasAnimationTexturesMap.keySet());
 
 		return animationTextureNames;
@@ -171,13 +172,13 @@ public final class LttlTextureManager extends LttlResourceManager
 	 */
 	public ArrayList<String> getTextureNames(boolean andWorld)
 	{
-		ArrayList<String> names = new ArrayList<String>(getTextureNamesUpdate());
+		ArrayList<String> names = new ArrayList<>(getTextureNamesUpdate());
 
 		// if not the world scene, but wants the world too, then add world texture names
 		if (andWorld && scene.getId() != Lttl.scenes.WORLD_ID)
 		{
-			names.addAll(Lttl.scenes.getWorld().getTextureManager()
-					.getTextureNames(false));
+			names.addAll(
+					Lttl.scenes.getWorld().getTextureManager().getTextureNames(false));
 		}
 		return names;
 	}
@@ -189,7 +190,7 @@ public final class LttlTextureManager extends LttlResourceManager
 	 */
 	public ArrayList<String> getAnimationTextureNames(boolean andWorld)
 	{
-		ArrayList<String> names = new ArrayList<String>(animationTextureNames);
+		ArrayList<String> names = new ArrayList<>(animationTextureNames);
 
 		// if not the world scene, but wants the world too, then add world texture names
 		if (andWorld && scene.getId() != Lttl.scenes.WORLD_ID)
@@ -226,8 +227,8 @@ public final class LttlTextureManager extends LttlResourceManager
 		for (AtlasRegion ar1 : nonAtlasTexturesMap.values())
 		{
 			count++;
-			if (ar.getTexture() == ar1.getTexture()) { return scene.getId()
-					+ "-" + count; }
+			if (ar.getTexture() == ar1
+					.getTexture()) { return scene.getId() + "-" + count; }
 		}
 
 		// did not find it
@@ -256,7 +257,9 @@ public final class LttlTextureManager extends LttlResourceManager
 	 * updates names afterward.
 	 * 
 	 * @param checkAtlas
+	 *            to see if files changed
 	 * @param checkNonAtlas
+	 *            to see if files changed
 	 * @return if found changes, may not find changes but still load because first time
 	 */
 	boolean loadAndBuildTextures(boolean checkAtlas, boolean checkNonAtlas)
@@ -265,8 +268,8 @@ public final class LttlTextureManager extends LttlResourceManager
 
 		if (rebuildTexturePacker(checkAtlas))
 		{
-			Lttl.logNote("Building Atlas: atlas textures built on scene "
-					+ scene.toString());
+			Lttl.logNote(
+					"Building Atlas: atlas textures built on scene " + scene.toString());
 			loadTextureAtlas();
 			modified = true;
 		}
@@ -315,15 +318,16 @@ public final class LttlTextureManager extends LttlResourceManager
 		if (!inputAtlasTexturesDirRelative.exists()
 				|| !outputAtlasTexturesDirRelative.exists())
 		{
-			Lttl.Throw("The Input our Output Directory does not exist for atlas textures on scene "
-					+ scene.getId());
+			Lttl.Throw(
+					"The Input our Output Directory does not exist for atlas textures on scene "
+							+ scene.getId());
 			return false;
 		}
 
-		int currentAtlasFilenameSum = LttlResourceManager
-				.getFolderFileNamesSum(inputAtlasTexturesDirRelative);
-		long currentInputDirectorySize = getFolderSize(inputAtlasTexturesDirRelative
-				.path());
+		int currentAtlasFilenameSum =
+				LttlResourceManager.getFolderFileNamesSum(inputAtlasTexturesDirRelative);
+		long currentInputDirectorySize =
+				getFolderSize(inputAtlasTexturesDirRelative.path());
 		if (checkIfModified && currentAtlasFilenameSum == lastAtlasFilenameSum
 				&& currentInputDirectorySize == lastTexturesToAtlasFolderSize)
 		{
@@ -353,12 +357,11 @@ public final class LttlTextureManager extends LttlResourceManager
 			return false;
 		}
 
-		int currentNonAtlasFilenameSum = LttlResourceManager
-				.getFolderFileNamesSum(nonAtlasTexturesDirRelative);
-		long currentInputDirectorySize = getFolderSize(nonAtlasTexturesDirRelative
-				.path());
-		if (checkIfModified
-				&& currentNonAtlasFilenameSum == lastNonAtlasFilenameSum
+		int currentNonAtlasFilenameSum =
+				LttlResourceManager.getFolderFileNamesSum(nonAtlasTexturesDirRelative);
+		long currentInputDirectorySize =
+				getFolderSize(nonAtlasTexturesDirRelative.path());
+		if (checkIfModified && currentNonAtlasFilenameSum == lastNonAtlasFilenameSum
 				&& currentInputDirectorySize == lastNonAtlasTexturesFolderSize)
 		{
 			lastNonAtlasFilenameSum = currentNonAtlasFilenameSum;
@@ -378,7 +381,7 @@ public final class LttlTextureManager extends LttlResourceManager
 		// creates fresh empty map
 		if (nonAtlasTexturesMap == null)
 		{
-			nonAtlasTexturesMap = new HashMap<String, TextureAtlas.AtlasRegion>();
+			nonAtlasTexturesMap = new HashMap<>();
 		}
 		nonAtlasTexturesMap.clear();
 
@@ -407,34 +410,33 @@ public final class LttlTextureManager extends LttlResourceManager
 				{
 					if (s.startsWith("f-"))
 					{
-						format = Enum
-								.valueOf(Format.class, s.replace("f-", ""));
+						format = Enum.valueOf(Format.class, s.replace("f-", ""));
 					}
 					else if (s.startsWith("w-"))
 					{
-						textureWrapU = Enum.valueOf(TextureWrap.class,
-								s.replace("w-", ""));
+						textureWrapU =
+								Enum.valueOf(TextureWrap.class, s.replace("w-", ""));
 						textureWrapV = textureWrapU;
 					}
 					else if (s.startsWith("wu-"))
 					{
-						textureWrapU = Enum.valueOf(TextureWrap.class,
-								s.replace("wu-", ""));
+						textureWrapU =
+								Enum.valueOf(TextureWrap.class, s.replace("wu-", ""));
 					}
 					else if (s.startsWith("wv-"))
 					{
-						textureWrapV = Enum.valueOf(TextureWrap.class,
-								s.replace("wv-", ""));
+						textureWrapV =
+								Enum.valueOf(TextureWrap.class, s.replace("wv-", ""));
 					}
 					else if (s.startsWith("min-"))
 					{
-						texFilterMin = Enum.valueOf(TextureFilter.class,
-								s.replace("min-", ""));
+						texFilterMin =
+								Enum.valueOf(TextureFilter.class, s.replace("min-", ""));
 					}
 					else if (s.startsWith("max-"))
 					{
-						texFilterMax = Enum.valueOf(TextureFilter.class,
-								s.replace("max-", ""));
+						texFilterMax =
+								Enum.valueOf(TextureFilter.class, s.replace("max-", ""));
 					}
 					else if (s.startsWith("mip-"))
 					{
@@ -447,8 +449,8 @@ public final class LttlTextureManager extends LttlResourceManager
 				}
 			}
 
-			AtlasRegion ar = TextureToAtlasRegion(fh, format, textureWrapU,
-					textureWrapV, texFilterMin, texFilterMax, mipMaps);
+			AtlasRegion ar = TextureToAtlasRegion(fh, format, textureWrapU, textureWrapV,
+					texFilterMin, texFilterMax, mipMaps);
 			ar.flip(false, true);
 			ar.name = name;
 			nonAtlasTexturesMap.put(name, ar);
@@ -459,6 +461,7 @@ public final class LttlTextureManager extends LttlResourceManager
 		// + scene.getId() + "]");
 	}
 
+	@Override
 	void dispose()
 	{
 		// dispose resources
@@ -504,18 +507,18 @@ public final class LttlTextureManager extends LttlResourceManager
 		// clear and make name maps, even if no atlas
 		if (atlasTexturesMap == null)
 		{
-			atlasTexturesMap = new HashMap<String, TextureAtlas.AtlasRegion>();
+			atlasTexturesMap = new HashMap<>();
 		}
 		atlasTexturesMap.clear();
 		if (atlasAnimationTexturesMap == null)
 		{
-			atlasAnimationTexturesMap = new HashMap<String, ArrayList<AtlasRegion>>();
+			atlasAnimationTexturesMap = new HashMap<>();
 		}
 		atlasAnimationTexturesMap.clear();
 
 		// check to see if .pack file exists
-		FileHandle packFileHandle = Gdx.files.internal(outputDirInternal.path()
-				+ "/" + packFileName + ".atlas");
+		FileHandle packFileHandle = Gdx.files
+				.internal(outputDirInternal.path() + "/" + packFileName + ".atlas");
 		if (packFileHandle == null || !packFileHandle.exists())
 		{
 			Lttl.logNote("Loading Texture Atlas: No texture atlas found on "
@@ -534,8 +537,8 @@ public final class LttlTextureManager extends LttlResourceManager
 			{
 				if (!atlasAnimationTexturesMap.containsKey(ar.name))
 				{
-					atlasAnimationTexturesMap.put(ar.name, LttlHelper
-							.ConvertToArrayList(atlas.findRegions(ar.name)));
+					atlasAnimationTexturesMap.put(ar.name,
+							LttlHelper.ConvertToArrayList(atlas.findRegions(ar.name)));
 				}
 				continue;
 			}
@@ -596,8 +599,7 @@ public final class LttlTextureManager extends LttlResourceManager
 		// search world if this scene is not the world (already would have searched)
 		if (checkWorld && ar == null && scene.getId() != Lttl.scenes.WORLD_ID)
 		{
-			ar = Lttl.scenes.getWorld().getTextureManager()
-					.findAtlasRegion(name, false);
+			ar = Lttl.scenes.getWorld().getTextureManager().findAtlasRegion(name, false);
 		}
 
 		return ar;
@@ -622,12 +624,11 @@ public final class LttlTextureManager extends LttlResourceManager
 		// search world if this scene is not the world (already would have searched)
 		if (checkWorld && list == null && scene.getId() != Lttl.scenes.WORLD_ID)
 		{
-			list = Lttl.scenes.getWorld().getTextureManager()
-					.findAtlasRegions(name, false);
+			list = Lttl.scenes.getWorld().getTextureManager().findAtlasRegions(name,
+					false);
 		}
 
-		list = (list == null) ? null : new ArrayList<TextureAtlas.AtlasRegion>(
-				list);
+		list = (list == null) ? null : new ArrayList<>(list);
 
 		return list;
 	}
@@ -640,12 +641,10 @@ public final class LttlTextureManager extends LttlResourceManager
 	 * @param format
 	 * @return
 	 */
-	public static AtlasRegion TextureToAtlasRegion(FileHandle internalFile,
-			Format format)
+	public static AtlasRegion TextureToAtlasRegion(FileHandle internalFile, Format format)
 	{
 		return TextureToAtlasRegion(internalFile, format, TextureWrap.Repeat,
-				TextureWrap.Repeat, TextureFilter.Linear, TextureFilter.Linear,
-				false);
+				TextureWrap.Repeat, TextureFilter.Linear, TextureFilter.Linear, false);
 	}
 
 	/**
@@ -665,15 +664,14 @@ public final class LttlTextureManager extends LttlResourceManager
 	 * @param useMipMaps
 	 * @return
 	 */
-	public static AtlasRegion TextureToAtlasRegion(FileHandle internalFile,
-			Format format, TextureWrap u, TextureWrap v, TextureFilter min,
-			TextureFilter max, boolean useMipMaps)
+	public static AtlasRegion TextureToAtlasRegion(FileHandle internalFile, Format format,
+			TextureWrap u, TextureWrap v, TextureFilter min, TextureFilter max,
+			boolean useMipMaps)
 	{
 		Texture texture = new Texture(internalFile, format, useMipMaps);
 		texture.setWrap(u, v);
 		texture.setFilter(min, max);
-		return new AtlasRegion(texture, 0, 0, texture.getWidth(),
-				texture.getHeight());
+		return new AtlasRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
 	}
 
 	/**
@@ -693,7 +691,7 @@ public final class LttlTextureManager extends LttlResourceManager
 	 */
 	public static ArrayList<AtlasRegion> getAllLoadedScenesTextures()
 	{
-		ArrayList<AtlasRegion> list = new ArrayList<AtlasRegion>();
+		ArrayList<AtlasRegion> list = new ArrayList<>();
 
 		for (LttlScene ls : Lttl.scenes.getAllLoaded(true))
 		{
@@ -710,7 +708,7 @@ public final class LttlTextureManager extends LttlResourceManager
 	 */
 	public static ArrayList<ArrayList<AtlasRegion>> getAllLoadedScenesTextureAnimations()
 	{
-		ArrayList<ArrayList<AtlasRegion>> list = new ArrayList<ArrayList<AtlasRegion>>();
+		ArrayList<ArrayList<AtlasRegion>> list = new ArrayList<>();
 
 		for (LttlScene ls : Lttl.scenes.getAllLoaded(true))
 		{
@@ -729,7 +727,7 @@ public final class LttlTextureManager extends LttlResourceManager
 	 */
 	public ArrayList<AtlasRegion> getAllTextures(boolean andWorld)
 	{
-		ArrayList<AtlasRegion> list = new ArrayList<AtlasRegion>();
+		ArrayList<AtlasRegion> list = new ArrayList<>();
 
 		for (AtlasRegion ar : atlasTexturesMap.values())
 		{
@@ -743,13 +741,13 @@ public final class LttlTextureManager extends LttlResourceManager
 		// add world textures if not world and want to
 		if (andWorld && scene.getId() != Lttl.scenes.WORLD_ID)
 		{
-			for (AtlasRegion ar : Lttl.scenes.getWorld().getTextureManager().atlasTexturesMap
-					.values())
+			for (AtlasRegion ar : Lttl.scenes.getWorld()
+					.getTextureManager().atlasTexturesMap.values())
 			{
 				list.add(ar);
 			}
-			for (AtlasRegion ar : Lttl.scenes.getWorld().getTextureManager().nonAtlasTexturesMap
-					.values())
+			for (AtlasRegion ar : Lttl.scenes.getWorld()
+					.getTextureManager().nonAtlasTexturesMap.values())
 			{
 				list.add(ar);
 			}
@@ -765,10 +763,9 @@ public final class LttlTextureManager extends LttlResourceManager
 	 *            if true, also adds the world textures (if not world scene already)
 	 * @return
 	 */
-	public ArrayList<ArrayList<AtlasRegion>> getAllTextureAnimations(
-			boolean andWorld)
+	public ArrayList<ArrayList<AtlasRegion>> getAllTextureAnimations(boolean andWorld)
 	{
-		ArrayList<ArrayList<AtlasRegion>> list = new ArrayList<ArrayList<AtlasRegion>>();
+		ArrayList<ArrayList<AtlasRegion>> list = new ArrayList<>();
 
 		for (ArrayList<AtlasRegion> ars : atlasAnimationTexturesMap.values())
 		{
@@ -799,10 +796,9 @@ public final class LttlTextureManager extends LttlResourceManager
 
 		for (LttlScene scene : Lttl.scenes.getAllLoaded(true))
 		{
-			for (LttlTextureBase tex : ComponentHelper
-					.getScenesComponentProperties(scene.getRef(),
-							LttlTextureBase.class, true, true,
-							FieldsMode.AllButIgnore))
+			for (LttlTextureBase tex : ComponentHelper.getScenesComponentProperties(
+					scene.getRef(), LttlTextureBase.class, true, true,
+					FieldsMode.AllButIgnore))
 			{
 				if (LttlTexture.class == tex.getClass())
 				{
@@ -818,8 +814,8 @@ public final class LttlTextureManager extends LttlResourceManager
 		Lttl.logNote("Updating Meshes...");
 
 		// update all meshes so they use the new textures
-		for (LttlMeshGenerator mg : Lttl.scenes.findComponentsAllScenes(
-				LttlMeshGenerator.class, true))
+		for (LttlMeshGenerator mg : Lttl.scenes
+				.findComponentsAllScenes(LttlMeshGenerator.class, true))
 		{
 			// only update those that already have a mesh
 			if (mg.r().getMesh() != null)
@@ -853,9 +849,8 @@ public final class LttlTextureManager extends LttlResourceManager
 
 			for (LttlComponent comp : scene.getAllComponents())
 			{
-				for (LttlTextureBase tex : ComponentHelper
-						.getComponentProperties(comp, LttlTextureBase.class,
-								true, true, FieldsMode.AllButIgnore))
+				for (LttlTextureBase tex : ComponentHelper.getComponentProperties(comp,
+						LttlTextureBase.class, true, true, FieldsMode.AllButIgnore))
 				{
 					boolean cleared = false;
 					if (LttlTexture.class == tex.getClass())

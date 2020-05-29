@@ -151,7 +151,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	 * if true, when worldTransform changes, it then updates the mesh's worldVertices to reflect those changes. This way
 	 * multiple meshes can be rendered with the same uniform matrix on the GPU.<br>
 	 * If false, then it will update worldRenderMatrix when the worldTransform changes. Then the local vertices will be
-	 * used when rendering, and a unique uniform matrix will be given to GPU, which must be drawn by itself (no batch)<br>
+	 * used when rendering, and a unique uniform matrix will be given to GPU, which must be drawn by itself (no
+	 * batch)<br>
 	 * The reason for making this false would be if you had a mesh that was moving a lot and had lots of vertices to
 	 * update with world. Instead of updating the vertices each frame from the local values to the world values on the
 	 * CPU, the local values would be sent to GPU with a matrix that includes the transform's worldTransform.
@@ -239,8 +240,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	{
 		// auto refreshes the textures on start
 		// this means all objects, even if not rendering on screen will get their textures
-		getTex0().refresh();
-		getTex1().refresh();
+		getTex0().refresh(this);
+		getTex1().refresh(this);
 	}
 
 	/**
@@ -280,7 +281,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	void updateAlpha(boolean forceUpdate)
 	{
 		if (forceUpdate || inheritAlpha != oldInheritAlpha
-				|| (parentAlphaChanged && inheritAlpha) || alpha != oldAlpha)
+				|| (parentAlphaChanged && inheritAlpha)
+				|| alpha != oldAlpha)
 		{
 			updateAlphaValues();
 
@@ -374,7 +376,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 		// if map does not exist, create it
 		if (uniformsMap == null)
 		{
-			uniformsMap = new HashMap<String, Object>();
+			uniformsMap = new HashMap<>();
 		}
 		uniformsMap.put(name, value);
 	}
@@ -407,8 +409,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	 * 
 	 * @param shaderObject
 	 */
-	void processDefaultUniforms(ShaderProgram shaderObject,
-			LttlShader shaderType)
+	void processDefaultUniforms(ShaderProgram shaderObject, LttlShader shaderType)
 	{
 		// assume (as of now) that any shader that uses default uniforms uses them all, otherwise would need to do
 		// shaderObject.hasUniform("u_uvOffset")
@@ -482,8 +483,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 			}
 			else
 			{
-				Lttl.Throw("There was no setUniform() for " + name + ":"
-						+ value.toString());
+				Lttl.Throw(
+						"There was no setUniform() for " + name + ":" + value.toString());
 			}
 		}
 	}
@@ -541,7 +542,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	}
 
 	/**
-	 * Sets this renderer's mesh to null;
+	 * Sets this renderer's mesh to null which will force it be made again
 	 */
 	@GuiButton
 	public void clearMesh()
@@ -610,9 +611,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	 *            if applicable, will also include holes
 	 * @return
 	 */
-	public Vector2Array getMeshTransformedVertices(
-			boolean forceWorldMeshUpdate, boolean includeHoles,
-			boolean includeAA)
+	public Vector2Array getMeshTransformedVertices(boolean forceWorldMeshUpdate,
+			boolean includeHoles, boolean includeAA)
 	{
 		if (meshTransformedVertices == null)
 		{
@@ -624,8 +624,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 		if (meshTransformedVertices.size() == 0
 				|| meshTransformedVertices.size() != desiredSize)
 		{
-			if (getMesh().getWorldVerticesArray().size == 0
-					|| forceWorldMeshUpdate)
+			if (getMesh().getWorldVerticesArray().size == 0 || forceWorldMeshUpdate)
 			{
 				getMesh().updateWorldVertices(t().worldRenderTransform);
 			}
@@ -695,8 +694,9 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 				&& customBoundingRectTransformedAxisAligned.width == 0)
 		{
 			// only if it doesn't have a parent then transform the rectangle with the world matrix
-			LttlMath.GetAABB(LttlMath.TransformRectangle(customBoundingRect,
-					t().getWorldRenderTransform(true), null),
+			LttlMath.GetAABB(
+					LttlMath.TransformRectangle(customBoundingRect,
+							t().getWorldRenderTransform(true), null),
 					customBoundingRectTransformedAxisAligned);
 		}
 		return customBoundingRectTransformedAxisAligned;
@@ -709,8 +709,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 
 		if (drawCustomBoundingRect && customBoundingRect != null)
 		{
-			float[] p = LttlMath.TransformRectangle(customBoundingRect, t()
-					.getWorldRenderTransform(true), null);
+			float[] p = LttlMath.TransformRectangle(customBoundingRect,
+					t().getWorldRenderTransform(true), null);
 			Lttl.editor.getSettings().colorRenderCheck.a *= .5f;
 			Lttl.debug.drawPolygonOutline(p, 0,
 					Lttl.editor.getSettings().colorRenderCheck);
@@ -730,8 +730,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 				for (int i = 0, n = holes.size; i <= n; i++)
 				{
 					int end = i == n ? points.size() : holes.get(i);
-					Lttl.debug.drawPolygonOutline(
-							points.toArray(start, end - 1), 0,
+					Lttl.debug.drawPolygonOutline(points.toArray(start, end - 1), 0,
 							Lttl.editor.getSettings().colorMeshOultine);
 					start = end;
 				}
@@ -744,8 +743,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 		}
 		if (drawMeshBoundingRectAxisAligned)
 		{
-			Lttl.debug.drawRectOutline(
-					getMeshBoundingRectTransformedAxisAligned(), 0,
+			Lttl.debug.drawRectOutline(getMeshBoundingRectTransformedAxisAligned(), 0,
 					Lttl.editor.getSettings().colorMeshBounding);
 		}
 		if (drawMeshBoundingRect)
@@ -788,8 +786,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	 */
 	public float[] getMeshBoundingRectTransformed()
 	{
-		return getMesh().getBoundingRectTransformed(
-				t().getWorldRenderTransform(true), new float[8]);
+		return getMesh().getBoundingRectTransformed(t().getWorldRenderTransform(true),
+				new float[8]);
 	}
 
 	// *********************//
@@ -833,8 +831,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	 */
 	public Tween tweenColorTo(Color targetColor, float duration)
 	{
-		return tweenColorTo(targetColor.r, targetColor.g, targetColor.b,
-				targetColor.a, duration);
+		return tweenColorTo(targetColor.r, targetColor.g, targetColor.b, targetColor.a,
+				duration);
 	}
 
 	/**
@@ -848,11 +846,11 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 	 * @param duration
 	 * @return
 	 */
-	public Tween tweenColorTo(float targetR, float targetG, float targetB,
-			float targetA, float duration)
+	public Tween tweenColorTo(float targetR, float targetG, float targetB, float targetA,
+			float duration)
 	{
-		return Lttl.tween.tweenColorTo(this, getColor(), targetR, targetG,
-				targetB, targetA, duration);
+		return Lttl.tween.tweenColorTo(this, getColor(), targetR, targetG, targetB,
+				targetA, duration);
 	}
 
 	@SuppressWarnings("unused")
@@ -862,8 +860,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 		generator().updateMesh();
 	}
 
-	IntMap<TweenGetterSetter> cachedTweenGetterSetters = new IntMap<TweenGetterSetter>(
-			0);
+	IntMap<TweenGetterSetter> cachedTweenGetterSetters = new IntMap<>(0);
 
 	@Override
 	public TweenGetterSetter getTweenGetterSetter(int animID)
@@ -875,23 +872,22 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 			{
 				case 0:
 				{
-					cachedTweenGetterSetters.put(animID,
-							new TweenGetterSetter()
-							{
+					cachedTweenGetterSetters.put(animID, new TweenGetterSetter()
+					{
 
-								@Override
-								public void set(float[] values)
-								{
-									alpha = values[0];
-								}
+						@Override
+						public void set(float[] values)
+						{
+							alpha = values[0];
+						}
 
-								@Override
-								public float[] get()
-								{
-									return new float[]
-									{ alpha };
-								}
-							});
+						@Override
+						public float[] get()
+						{
+							return new float[]
+							{ alpha };
+						}
+					});
 					break;
 				}
 			}
@@ -938,7 +934,8 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 		/* update canRender */
 		// transform not enabled this frame
 		// renderer is not enabled or has a 0 world alpha
-		if (!t().enabledThisFrame || !isEnabled() || getWorldAlpha(false) == 0) { return canRender = false; }
+		if (!t().enabledThisFrame || !isEnabled()
+				|| getWorldAlpha(false) == 0) { return canRender = false; }
 
 		// if no shader, show error if first time
 		if (shader == null)
@@ -987,8 +984,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 					if (!generatorWarning)
 					{
 						generatorWarning = true;
-						Lttl.logNote("Renderering: renderer on "
-								+ t().getName()
+						Lttl.logNote("Renderering: renderer on " + t().getName()
 								+ " does not have a mesh, even after generator attempted to create one.");
 					}
 					return canRender = false;
@@ -1004,8 +1000,7 @@ public class LttlRenderer extends LttlComponent implements LttlAnimated
 			// The reason why we update these meshes over time is because it is just for slight AA fixes, while
 			// above, the meshes don't even exist at all.
 			else if (!Lttl.game.getSettings().getTargetCamera()
-					.isAutoUpdatingMeshesOnZoom()
-					&& generator().aaSettings != null
+					.isAutoUpdatingMeshesOnZoom() && generator().aaSettings != null
 					&& generator().aaSettings.cameraZoomDependent
 					&& generator().aaSettings.autoUpdateOnCameraZoom
 					&& generator().getCameraZoomOnLastUpdateMesh() != Lttl.game

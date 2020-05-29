@@ -6,8 +6,6 @@ import com.lttlgames.editor.annotations.GuiButton;
 import com.lttlgames.editor.annotations.Persist;
 
 /**
- * NOTE: this needs to refresh() onStart
- * 
  * @author Josh
  */
 @Persist(-9017)
@@ -15,6 +13,8 @@ public class LttlTexture extends LttlTextureBase
 {
 	private AtlasRegion refAtlasRegion;
 	private boolean didWarning = false;
+
+	private LttlRenderer hostRenderer = null;
 
 	// used for JSON creation, cause no params
 	public LttlTexture()
@@ -45,6 +45,20 @@ public class LttlTexture extends LttlTextureBase
 	}
 
 	/**
+	 * Sets the host renderer component this texture is on, so it can force the mesh to refresh if it's refreshed (this
+	 * is mostly important for atlases)
+	 * 
+	 * @param hostRenderer
+	 *            renderer component this texture is on
+	 * @return
+	 */
+	protected AtlasRegion refresh(LttlRenderer hostRenderer)
+	{
+		this.hostRenderer = hostRenderer;
+		return refresh();
+	}
+
+	/**
 	 * Finds a texture with set name (from atlas or not), sets it for a quicker reference via get(), returns it.<br>
 	 * You don't want to use this every frame since it is doing a string comparison.<br>
 	 * <br>
@@ -60,8 +74,8 @@ public class LttlTexture extends LttlTextureBase
 			// search all loaded scenes
 			for (LttlScene s : Lttl.scenes.getAllLoaded(true))
 			{
-				refAtlasRegion = s.getTextureManager().findAtlasRegion(
-						textureRegionName, false);
+				refAtlasRegion =
+						s.getTextureManager().findAtlasRegion(textureRegionName, false);
 				if (refAtlasRegion != null)
 				{
 					break;
@@ -72,8 +86,9 @@ public class LttlTexture extends LttlTextureBase
 				if (!didWarning)
 				{
 					didWarning = true;
-					Lttl.logNote("Refreshing LttlTexture: AtlasRegion not found when searching for "
-							+ textureRegionName);
+					Lttl.logNote(
+							"Refreshing LttlTexture: AtlasRegion not found when searching for "
+									+ textureRegionName);
 				}
 			}
 			else
@@ -85,6 +100,10 @@ public class LttlTexture extends LttlTextureBase
 		{
 			refAtlasRegion = null;
 		}
+
+		// if this texture is on a renderer and the texture just changed, force mesh to update by clearing it
+		if (hostRenderer != null) hostRenderer.clearMesh();
+
 		return refAtlasRegion;
 	}
 

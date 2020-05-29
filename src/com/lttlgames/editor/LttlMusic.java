@@ -81,7 +81,7 @@ public class LttlMusic
 	}
 
 	/**
-	 * Returns the {@link Music} refernce, if none has been found, will refresh.
+	 * Returns the {@link Music} refer4nce, if none has been found, will refresh.
 	 * 
 	 * @return null if none found
 	 */
@@ -108,6 +108,7 @@ public class LttlMusic
 
 	public void play()
 	{
+		refresh();
 		if (ref != null)
 		{
 			ref.setPan(pan, volume);
@@ -116,8 +117,7 @@ public class LttlMusic
 		}
 		else
 		{
-			Lttl.logNote("Trying to play music '" + name
-					+ "' but no reference.");
+			Lttl.logNote("Trying to play music '" + name + "' but no reference.");
 		}
 	}
 
