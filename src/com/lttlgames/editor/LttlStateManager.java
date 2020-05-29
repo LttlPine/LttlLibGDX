@@ -153,8 +153,8 @@ public abstract class LttlStateManager<T extends LttlComponent, X extends StateB
 		{
 			if (manager.getAllStateNames().contains(relatedStateName))
 			{
-				StateBase newState =
-						LttlObjectGraphCrawler.newInstance(manager.getStateClass());
+				StateBase newState = (StateBase) LttlObjectGraphCrawler
+						.newInstance(manager.getStateClass());
 				newState.name = stateName;
 
 				// if target component exists, update the new state to this component's values
